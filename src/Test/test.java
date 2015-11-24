@@ -19,5 +19,8 @@ public class test
             String dstr = matcher.group(1);
             System.out.println(dstr);
         }
+
+        System.out.println(1.0/20);
+
     }
 }

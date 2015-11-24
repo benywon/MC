@@ -34,4 +34,16 @@ public class Answer implements Serializable
 
     private String answer;
     private boolean IsAnswer=false;
+
+    public boolean isPredictResult()
+    {
+        return PredictResult;
+    }
+
+    public void setPredictResult(boolean predictResult)
+    {
+        PredictResult = predictResult;
+    }
+
+    private boolean PredictResult=false;
 }
