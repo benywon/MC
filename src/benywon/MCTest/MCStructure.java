@@ -1,5 +1,7 @@
 package benywon.MCTest;
 
+import benywon.publicMethods.Filebases;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,33 +11,84 @@ import java.util.List;
  */
 public class MCStructure implements Serializable
 {
-    public int MC_id;//表征是mctest500 或者是mc200
-    public String Purpose;//是test 还是train 还是dev
+    public static final String TEST="test";
+    public static final String TRAIN="train";
+    public static final String DEV="dev";
+
+    public int MC_id;//琛ㄥ緛鏄痬ctest500 鎴栬�呮槸mc160
+    public String Purpose;//鏄痶est 杩樻槸train 杩樻槸dev
     //**************************************//
 
     public List<Document> documents=new ArrayList<Document>();
 
-    public MCStructure(List<String> list)
+    public MCStructure(String filename)
     {
-        for(String str:list)
-        {
-            Document document = new Document();
-            String[] div = str.split("\t");
-            int number=Integer.parseInt(div[0].split("\\.")[2]);
-            document.setDocID(number);
-            document.setDocument(div[2]);
-            //from now to the end of line these fields are q&a so we do it separately
-            int len=div.length;
-            List<String> questionAanswer=new ArrayList<String>();
-            for(int i=3;i<len;i++)
-            {
-                questionAanswer.add(div[i]);
-            }
-            document.setquestionAasnwer(questionAanswer);
-            this.documents.add(document);
-        }
+
+        List<String> list= Filebases.GetListFromFile(filename);
+        setProperty(filename);
+
+        setDocumentsFromStrList(list);
 
     }
+
+    private void setDocumentsFromStrList(List<String> list)
+    {
+        for(String onedocstr:list)
+        {
+            setOneDocumentPerItemInList(onedocstr);
+        }
+    }
+    private void setOneDocumentPerItemInList(String onedocstr)
+    {
+        Document document = new Document();
+        String[] div = onedocstr.split("\t");
+        int number=Integer.parseInt(div[0].split("\\.")[2]);
+        document.setDocID(number);
+        document.setDocument(div[2]);
+        //from now to the end of line these fields are q&a so we do it separately
+        int len=div.length;
+        List<String> questionAanswer=new ArrayList<String>();
+        for(int i=3;i<len;i++)
+        {
+            questionAanswer.add(div[i]);
+        }
+        document.setquestionAasnwer(questionAanswer);
+        this.documents.add(document);
+    }
+    private void setProperty(String filename)
+    {
+        setPropertyId(filename);
+        setPropertyPurpose(filename);
+    }
+    private void setPropertyId(String filename)
+    {
+        if(filename.contains("500"))
+        {
+            this.MC_id=500;
+        }
+        else
+        {
+            this.MC_id=160;
+        }
+    }
+    private void setPropertyPurpose(String filename)
+    {
+        if(filename.contains("test"))
+        {
+            this.Purpose=TEST;
+        }
+        else if(filename.contains("dev"))
+        {
+            this.Purpose=DEV;
+        }
+        else
+        {
+            this.Purpose=TRAIN;
+        }
+    }
+
+
+
 
     public void setallAnswers(List<String> answers)
     {

@@ -4,5 +4,6 @@
     <MCtestDir>data/MCTEST/</MCtestDir>
     <MC500trainfilepath>MCTest/mc500.train.tsv</MC500trainfilepath>
     <MC500Answerfilepath>MCTest/mc500.train.ans</MC500Answerfilepath>
+    <MC500testfilepath>MCTest/mc500.test.tsv</MC500testfilepath>
 </fileconfig>
 </configerations>
