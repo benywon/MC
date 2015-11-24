@@ -52,9 +52,19 @@ public class Question implements Serializable
     }
 
     private int questionID;
-    private boolean IsMultiple;//是否需要多个句子来得到结果
+    private boolean IsMultiple;//
     private List<Answer> answer=new ArrayList<Answer>();
-
+    public void setPredicAnswer(int id)
+    {
+        for(Answer answer:this.answer)
+        {
+            if(answer.getId()==id)
+            {
+                answer.setPredictResult(true);
+                break;
+            }
+        }
+    }
     public void setthisquestion(List<String> questionone,int questionID)
     {
         this.setQuestionID(questionID);
@@ -71,7 +81,7 @@ public class Question implements Serializable
         setQuestion(q.split(":")[1]);
         for (int i = 1; i <questionone.size() ; i++)
         {
-            Answer answer=new Answer(questionone.get(i));
+            Answer answer=new Answer(questionone.get(i),i);
             this.answer.add(answer);
         }
     }

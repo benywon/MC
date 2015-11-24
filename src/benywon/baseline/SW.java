@@ -9,6 +9,7 @@ import benywon.publicMethods.StringUtils;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 
 /** this is the baseline method sliding window
@@ -48,10 +49,32 @@ public class SW
     private void  buildSWperQuestion(Map<String,Double> ITF,Question question)
     {
         String questionstr=question.getQuestion();
+        Double max_score=-10.0;
+        int  realAnswerid=0;//默认第一个
         for(Answer answer:question.getAnswer())
         {
-
+            Double score=getAnswerSimilarity(answer,questionstr,ITF);
+            if(score>max_score)
+            {
+                max_score=score;
+                realAnswerid=answer.getId();
+            }
         }
+        question.setPredicAnswer(realAnswerid);
+    }
+    private Double getAnswerSimilarity(Answer answer,String question,Map<String,Double> ITF)
+    {
+        String pair=answer.getAnswer()+" "+question;
+        Set<String> set=StringUtils.getLeximaFromString(pair);
+        Double score=0.0;
+        for(String word:set)
+        {
+            if(ITF.containsKey(word))
+            {
+                score+=ITF.get(word);
+            }
+        }
+        return score;
     }
 
     /**

@@ -1,7 +1,9 @@
 package benywon.publicMethods;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by benywon on 2015/11/24.
@@ -78,5 +80,14 @@ public class StringUtils
         }
         return word;
     }
-
+    public static Set<String> getLeximaFromString(String in)
+    {
+        Set<String> set=new HashSet<String>();
+        String[] strArray=in.split(" ");
+        for(String str:strArray)
+        {
+            set.add(transferWord(str));
+        }
+        return set;
+    }
 }
