@@ -1,9 +1,6 @@
 package benywon.publicMethods;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by benywon on 2015/11/24.
@@ -29,6 +26,22 @@ public class StringUtils
         }
         return map;
     }
+
+    public static List<String> getLeximaList(String in)
+    {
+        List<String> list=new ArrayList<String>();
+        String[] strArray=in.split(" ");
+        for(String str:strArray)
+        {
+            if(str.equals(""))
+            {
+                continue;
+            }
+            list.add(transferWord(str));
+        }
+        return list;
+    }
+
     public static Map<String,Integer> getDocumentTF(String document)
     {
         Map<String,Integer> tfmap=new HashMap<String, Integer>();
@@ -54,6 +67,15 @@ public class StringUtils
         word=stripComma(word);
         word=stripPeriod(word);
         word=stripnoise(word);
+        word=stripQmark(word);
+        return word;
+    }
+    private static String stripQmark(String word)
+    {
+        if(word.contains("?"))
+        {
+            return word.replaceAll("\\?","");
+        }
         return word;
     }
     private static String stripComma (String word)
@@ -86,7 +108,42 @@ public class StringUtils
         String[] strArray=in.split(" ");
         for(String str:strArray)
         {
+            if(str.equals(""))
+            {
+                continue;
+            }
             set.add(transferWord(str));
+        }
+        return set;
+    }
+
+    /**
+     * 从两个set中找到公共的集合
+     * @param set1 应该是比较小的那个
+     * @param set2 应该是比较大的那个
+     * @return
+     */
+    public static Set<String> commonWordsSet(Set<String> set1,Set<String> set2)
+    {
+        Set<String> set=new HashSet<String>();
+        for(String s1:set1)
+        {
+            if(set2.contains(s1))
+            {
+                set.add(s1);
+            }
+        }
+        return set;
+    }
+    public static Set<String> wordsetInSet1ButNotInSet2(Set<String> set1,Set<String> set2)
+    {
+        Set<String> set=new HashSet<String>();
+        for(String s1:set1)
+        {
+            if(!set2.contains(s1))
+            {
+                set.add(s1);
+            }
         }
         return set;
     }

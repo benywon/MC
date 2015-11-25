@@ -4,33 +4,36 @@ import benywon.MCTest.Answer;
 import benywon.MCTest.Document;
 import benywon.MCTest.MCStructure;
 import benywon.MCTest.Question;
-import benywon.publicMethods.Myconfig;
 import benywon.publicMethods.StringUtils;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-
-/** this is the baseline method sliding window
- * Created by benywon on 2015/11/24.
+/**
+ * Created by benywon on 2015/11/25.
  */
-public class SW
+public class SlidingWindow
 {
-    public static void main(String[] args)
-    {
-        String mc500testfile= Myconfig.Getconfiginfo("MCtestDir")+Myconfig.Getconfiginfo("MC500testfilepath");
-        MCStructure mcStructure=new MCStructure(mc500testfile);
-        SW sw=new SW(mcStructure);
-        System.out.println("hsiud");
-    }
-    public SW(MCStructure mcStructure)
+    public SlidingWindow(MCStructure mcStructure)
     {
         if(checkValid(mcStructure))
         {
             buildSWfromDocs(mcStructure.documents);
         }
+        else
+        {
+            try
+            {
+                buildSWfromDocs(mcStructure.documents);
+                throw new Exception("not test file");
+            } catch (Exception e)
+            {
+               return;
+            }
+        }
     }
+
     private void buildSWfromDocs(List<Document> docs)
     {
         for(Document document:docs)
@@ -40,20 +43,23 @@ public class SW
     }
     private void buildSWperDoc(Document document)
     {
-        Map<String,Double> ITF= StringUtils.getDocumentITF(document.getDocument());
+        String docstr=document.getDocument();
+        Map<String,Double> ITF= StringUtils.getDocumentITF(docstr);
+        List<String> list=StringUtils.getLeximaList(docstr);
         for(Question question:document.getQuestions())
         {
-            buildSWperQuestion(ITF,question);
+            buildSWperQuestion(ITF,list,question);
         }
     }
-    private void  buildSWperQuestion(Map<String,Double> ITF,Question question)
+    private void  buildSWperQuestion(Map<String,Double> ITF,List<String>  document,Question question)
     {
         String questionstr=question.getQuestion();
+
         Double max_score=-10.0;
         int  realAnswerid=0;//默认第一个
         for(Answer answer:question.getAnswer())
         {
-            Double score=getAnswerSimilarity(answer,questionstr,ITF);
+            Double score=getAnswerSimilarity(document,answer,questionstr,ITF);
             if(score>max_score)
             {
                 max_score=score;
@@ -62,27 +68,32 @@ public class SW
         }
         question.setPredicAnswer(realAnswerid);
     }
-    private Double getAnswerSimilarity(Answer answer,String question,Map<String,Double> ITF)
+    private Double getAnswerSimilarity(List<String>  document,Answer answer,String question,Map<String,Double> ITF)
     {
         String pair=answer.getAnswer()+" "+question;
         Set<String> set=StringUtils.getLeximaFromString(pair);
         Double score=0.0;
-        for(String word:set)
+        double maxValue=-Double.MAX_VALUE;
+        int windowsize=set.size();
+        int totalsize=document.size();
+        for(int i=0;i<totalsize;i++)
         {
-            if(ITF.containsKey(word))
+            double sum=0;
+            for(int j=0;j<windowsize&&(i+j)<totalsize;j++)
             {
-                score+=ITF.get(word);
+                String word=document.get(i+j);
+                if(set.contains(word))
+                {
+                    sum+=ITF.get(word);
+                }
+            }
+            if(sum > maxValue)
+            {
+                maxValue = sum;
             }
         }
-        return score;
+        return maxValue;
     }
-
-    /**
-     * we only build the sw model on test data since this method
-     * did not require train set
-     * @param mcStructure
-     * @return
-     */
     private boolean checkValid(MCStructure mcStructure)
     {
         String purpose=mcStructure.Purpose;

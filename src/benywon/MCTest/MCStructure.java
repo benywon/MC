@@ -17,10 +17,14 @@ public class MCStructure implements Serializable
 
     public int MC_id;//表征是mctest500 或者是mc160
     public String Purpose;//是test 还是train 还是dev
-    //**************************************//
-
     public List<Document> documents=new ArrayList<Document>();
 
+    //**************************************//
+    //
+    public MCStructure()
+    {
+
+    }
     public MCStructure(String filename)
     {
 
@@ -88,7 +92,11 @@ public class MCStructure implements Serializable
     }
 
 
-
+    public void setAnswerFromFile(String filename)
+    {
+        List<String> answers= Filebases.GetListFromFile(filename);
+        this.setallAnswers(answers);
+    }
 
     public void setallAnswers(List<String> answers)
     {

@@ -10,6 +10,13 @@ import java.util.List;
 public class Document implements Serializable
 {
     private static final long serialVersionUID = -5809382578272943999L;
+    private int docID;
+    private String document;
+    private List<Question> questions=new ArrayList<Question>();
+
+    //*****************************************************//
+
+
     public String getDocument()
     {
         return document;
@@ -48,9 +55,7 @@ public class Document implements Serializable
         //multiple: What color were the most ducklings?
 
     }
-    private int docID;
-    private String document;
-    private List<Question> questions=new ArrayList<Question>();
+
 
     public void setquestionAasnwer(List<String> questionAanswer)
     {
